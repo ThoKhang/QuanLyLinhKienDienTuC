@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react';
 import axiosClient from '../api/axiosClient';
 import styles from './MyOrders.module.css';
 import { useNavigate } from 'react-router-dom';
+
 function MyOrders() {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+
     const fetchOrders = async () => {
         try {
-            // Đã sửa lại đường dẫn API cho đúng với Backend
             const res = await axiosClient.get('/don-hang/lich-su'); 
             setOrders(res.data);
         } catch (err) {
@@ -22,7 +23,6 @@ function MyOrders() {
         fetchOrders();
     }, []);
 
-    // Hàm hiển thị màu sắc theo trạng thái
     const getStatusStyle = (status) => {
         switch(status) {
             case 'CHO_XAC_NHAN': return { color: '#d97706', background: '#fef3c7' };
@@ -33,18 +33,14 @@ function MyOrders() {
         }
     };
 
-    // Hàm xử lý khi nhấn Đổi trả
-    const handleDoiTra = (donHangId) => {
-        const lyDo = window.prompt("Vui lòng nhập lý do bạn muốn đổi/trả đơn hàng này:");
-        if (lyDo) {
-            alert(`Đã gửi yêu cầu đổi trả cho đơn #${donHangId} với lý do: ${lyDo}\n(Chức năng này cần viết thêm API ở Backend)`);
-            // Sau này Khang sẽ gọi axiosClient.post('/yeu-cau-doi-tra', { donHangId, lyDo }) ở đây
-        }
-    };
-
-    // Hàm xử lý khi nhấn Đánh giá
-    const handleDanhGia = (donHangId) => {
-        alert(`Chuyển sang trang đánh giá sản phẩm cho đơn #${donHangId}...\n(Chức năng này cần tạo form đánh giá riêng)`);
+    const vietsubStatus = (status) => {
+        const map = {
+            'CHO_XAC_NHAN': 'Chờ xác nhận',
+            'DANG_GIAO': 'Đang giao hàng',
+            'DA_GIAO': 'Đã giao thành công',
+            'DA_HUY': 'Đã hủy'
+        };
+        return map[status] || status;
     };
 
     if (loading) return <div className={styles.loading}>Đang tải lịch sử đơn hàng...</div>;
@@ -60,42 +56,35 @@ function MyOrders() {
                 ) : (
                     orders.map(order => (
                         <div key={order.id} className={styles.orderCard}>
-                            {/* Phần Header đơn hàng */}
                             <div className={styles.orderHeader}>
                                 <span>Mã đơn: <b>#{order.id}</b></span>
                                 <span className={styles.status} style={getStatusStyle(order.trangThaiDon)}>
-                                    {order.trangThaiDon === 'DA_GIAO' ? 'Đã giao thành công' : order.trangThaiDon}
+                                    {vietsubStatus(order.trangThaiDon)}
                                 </span>
                             </div>
                             
-                            {/* Phần nội dung */}
                             <div className={styles.orderBody}>
                                 <p>Ngày đặt: {new Date(order.ngayDat).toLocaleDateString('vi-VN')} lúc {new Date(order.ngayDat).toLocaleTimeString('vi-VN')}</p>
                                 <p>Tổng tiền: <b className={styles.price}>{new Intl.NumberFormat('vi-VN').format(order.tongTien)}đ</b></p>
                                 <p>Thanh toán: {order.phuongThucThanhToan === 'TIEN_MAT' ? 'Tiền mặt (COD)' : 'Chuyển khoản QR'}</p>
                             </div>
                             
-                            {/* Nút thao tác: Sẽ thay đổi tùy theo trạng thái */}
                             <div style={{ marginTop: '15px', display: 'flex', gap: '10px' }}>
-                                <button 
-                                    className={styles.btnDetail} 
-                                    onClick={() => navigate(`/order-detail/${order.id}`)}
-                                >
+                                <button className={styles.btnDetail} onClick={() => navigate(`/order-detail/${order.id}`)}>
                                     Xem chi tiết
                                 </button>
                                 
-                                {/* CHỈ HIỂN THỊ 2 NÚT NÀY KHI ĐƠN HÀNG ĐÃ GIAO */}
                                 {order.trangThaiDon === 'DA_GIAO' && (
                                     <>
                                         <button 
                                             style={{ background: '#f59e0b', color: 'white', border: 'none', padding: '8px 15px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}
-                                            onClick={() => handleDanhGia(order.id)}
+                                            onClick={() => navigate(`/review/${order.id}`)}
                                         >
                                             ⭐ Đánh giá
                                         </button>
                                         <button 
                                             style={{ background: 'white', color: '#dc2626', border: '1px solid #dc2626', padding: '8px 15px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}
-                                            onClick={() => handleDoiTra(order.id)}
+                                            onClick={() => navigate(`/return/${order.id}`)}
                                         >
                                             🔄 Đổi / Trả hàng
                                         </button>

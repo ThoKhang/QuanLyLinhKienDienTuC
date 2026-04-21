@@ -6,12 +6,7 @@ function AdminProduct() {
     const [products, setProducts] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);
-    
-    // Đã đổi thành soLuongTon và thêm chiTietLinhKiens
-    const [formData, setFormData] = useState({
-        tenSanPham: '', giaBan: '', soLuongTon: '', moTa: '', hinhAnh: '', maSanPham: '', danhMucId: 1, chiTietLinhKiens: []
-    });
-
+    const [formData, setFormData] = useState({ tenSanPham: '', giaBan: '', soLuongTon: '', moTa: '', hinhAnh: '', maSanPham: '', danhMucId: 1, chiTietLinhKiens: [] });
     const [selectedFile, setSelectedFile] = useState(null);
     const [previewUrl, setPreviewUrl] = useState('');
 
@@ -24,7 +19,6 @@ function AdminProduct() {
 
     useEffect(() => { fetchProducts(); }, []);
 
-    // --- CÁC HÀM XỬ LÝ MẢNG THÔNG SỐ KỸ THUẬT ---
     const handleAddSpec = () => {
         setFormData({ ...formData, chiTietLinhKiens: [...formData.chiTietLinhKiens, { tenThongSo: '', giaTri: '' }] });
     };
@@ -39,17 +33,12 @@ function AdminProduct() {
         const newSpecs = formData.chiTietLinhKiens.filter((_, i) => i !== index);
         setFormData({ ...formData, chiTietLinhKiens: newSpecs });
     };
-    // ---------------------------------------------
 
     const handleOpenModal = (product = null) => {
         setSelectedFile(null); 
         if (product) {
             setEditingProduct(product);
-            setFormData({ 
-                ...product, 
-                danhMucId: product.danhMuc?.id || 1,
-                chiTietLinhKiens: product.chiTietLinhKiens || [] // Nạp thông số cũ
-            });
+            setFormData({ ...product, danhMucId: product.danhMuc?.id || 1, chiTietLinhKiens: product.chiTietLinhKiens || [] });
             setPreviewUrl(product.hinhAnh); 
         } else {
             setEditingProduct(null);
@@ -71,31 +60,24 @@ function AdminProduct() {
         e.preventDefault();
         try {
             let finalImageUrl = formData.hinhAnh;
-
             if (selectedFile) {
                 const uploadData = new FormData();
                 uploadData.append('file', selectedFile);
-                
-                const uploadRes = await axiosClient.post('/admin/upload', uploadData, {
-                    headers: { 'Content-Type': 'multipart/form-data' }
-                });
+                const uploadRes = await axiosClient.post('/admin/upload', uploadData, { headers: { 'Content-Type': 'multipart/form-data' } });
                 finalImageUrl = uploadRes.data; 
             }
-
             const payload = { ...formData, hinhAnh: finalImageUrl };
-
             if (editingProduct) {
                 await axiosClient.put(`/admin/san-pham/${editingProduct.id}`, payload);
             } else {
                 await axiosClient.post(`/admin/san-pham?danhMucId=${payload.danhMucId}`, payload);
             }
-            
             alert("Lưu linh kiện thành công!");
             setIsModalOpen(false);
             fetchProducts();
         } catch (err) { 
             console.error(err);
-            alert("Có lỗi xảy ra, kiểm tra Console nhé!"); 
+            alert("Có lỗi xảy ra!"); 
         }
     };
 
@@ -126,13 +108,14 @@ function AdminProduct() {
                             <th>Hành động</th>
                         </tr>
                     </thead>
+                    {/* QUAN TRỌNG: Loại bỏ khoảng trắng giữa các thẻ để hết lỗi Console */}
                     <tbody>
                         {products.map(sp => (
                             <tr key={sp.id}>
                                 <td><img src={sp.hinhAnh} className={styles.imgPreview} alt="" /></td>
                                 <td>{sp.tenSanPham}</td>
                                 <td>{new Intl.NumberFormat('vi-VN').format(sp.giaBan)}đ</td>
-                                <td>{sp.soLuongTon || 0}</td> {/* Đã sửa thành soLuongTon */}
+                                <td>{sp.soLuongTon || 0}</td>
                                 <td>
                                     <button className={styles.btnEdit} onClick={() => handleOpenModal(sp)}>✏️</button>
                                     <button className={styles.btnDelete} onClick={() => handleDelete(sp.id)}>🗑️</button>
@@ -145,48 +128,38 @@ function AdminProduct() {
 
             {isModalOpen && (
                 <div className={styles.modalOverlay}>
-                    {/* Thêm style để Modal cuộn được khi có quá nhiều thông số */}
                     <div className={styles.modal} style={{ width: '600px', maxHeight: '90vh', overflowY: 'auto' }}>
                         <h2>{editingProduct ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm mới'}</h2>
                         <form onSubmit={handleSubmit}>
-                            <input type="text" placeholder="Mã sản phẩm (VD: SP01)" value={formData.maSanPham} onChange={e => setFormData({...formData, maSanPham: e.target.value})} required />
+                            <input type="text" placeholder="Mã sản phẩm" value={formData.maSanPham} onChange={e => setFormData({...formData, maSanPham: e.target.value})} required />
                             <input type="text" placeholder="Tên linh kiện" value={formData.tenSanPham} onChange={e => setFormData({...formData, tenSanPham: e.target.value})} required />
-                            
                             <div style={{ display: 'flex', gap: '10px' }}>
                                 <input style={{ flex: 1 }} type="number" placeholder="Giá bán" value={formData.giaBan} onChange={e => setFormData({...formData, giaBan: e.target.value})} required />
-                                <input style={{ flex: 1 }} type="number" placeholder="Số lượng tồn kho" value={formData.soLuongTon} onChange={e => setFormData({...formData, soLuongTon: e.target.value})} required />
+                                <input style={{ flex: 1 }} type="number" placeholder="Số lượng tồn" value={formData.soLuongTon} onChange={e => setFormData({...formData, soLuongTon: e.target.value})} required />
                             </div>
-                            
-                            <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+                            <div style={{ display: 'flex', gap: '15px', alignItems: 'center', margin: '10px 0' }}>
                                 <div style={{ flex: 1 }}>
-                                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', color: '#475569' }}>Hình ảnh linh kiện</label>
-                                    <input type="file" accept="image/*" onChange={handleFileChange} style={{ width: '100%', padding: '8px', border: '1px dashed #cbd5e1', borderRadius: '8px' }} />
+                                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '13px' }}>Hình ảnh</label>
+                                    <input type="file" accept="image/*" onChange={handleFileChange} />
                                 </div>
-                                {previewUrl && <img src={previewUrl} alt="Preview" style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #e2e8f0' }} />}
+                                {previewUrl && <img src={previewUrl} alt="Preview" style={{ width: '50px', height: '50px', borderRadius: '4px' }} />}
                             </div>
-
-                            <textarea placeholder="Mô tả tóm tắt" value={formData.moTa} onChange={e => setFormData({...formData, moTa: e.target.value})} />
-                            
-                            {/* KHU VỰC THÔNG SỐ ĐỘNG */}
-                            <div style={{ padding: '15px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px', alignItems: 'center' }}>
-                                    <label style={{ fontWeight: 'bold', color: '#1e293b' }}>Thông số kỹ thuật</label>
-                                    <button type="button" onClick={handleAddSpec} style={{ padding: '6px 10px', background: '#4f46e5', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '12px' }}>
-                                        + Thêm dòng
-                                    </button>
+                            <textarea placeholder="Mô tả" value={formData.moTa} onChange={e => setFormData({...formData, moTa: e.target.value})} />
+                            <div style={{ padding: '10px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', marginTop: '10px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                                    <b>Thông số kỹ thuật</b>
+                                    <button type="button" onClick={handleAddSpec} style={{ background: '#4f46e5', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>+ Thêm</button>
                                 </div>
-                                
                                 {formData.chiTietLinhKiens.map((spec, index) => (
-                                    <div key={index} style={{ display: 'flex', gap: '8px', marginBottom: '10px' }}>
-                                        <input type="text" placeholder="Tên (VD: Socket)" value={spec.tenThongSo} onChange={(e) => handleSpecChange(index, 'tenThongSo', e.target.value)} style={{ flex: 1, padding: '8px', borderRadius: '4px', border: '1px solid #cbd5e1' }} required />
-                                        <input type="text" placeholder="Giá trị (VD: LGA 1700)" value={spec.giaTri} onChange={(e) => handleSpecChange(index, 'giaTri', e.target.value)} style={{ flex: 2, padding: '8px', borderRadius: '4px', border: '1px solid #cbd5e1' }} required />
-                                        <button type="button" onClick={() => handleRemoveSpec(index)} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '0 12px', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>X</button>
+                                    <div key={index} style={{ display: 'flex', gap: '5px', marginBottom: '5px' }}>
+                                        <input type="text" placeholder="Tên" value={spec.tenThongSo} onChange={(e) => handleSpecChange(index, 'tenThongSo', e.target.value)} required />
+                                        <input type="text" placeholder="Giá trị" value={spec.giaTri} onChange={(e) => handleSpecChange(index, 'giaTri', e.target.value)} required />
+                                        <button type="button" onClick={() => handleRemoveSpec(index)} style={{ background: '#ef4444', color: 'white', border: 'none', cursor: 'pointer' }}>X</button>
                                     </div>
                                 ))}
                             </div>
-                            
                             <div className={styles.modalActions} style={{ marginTop: '20px' }}>
-                                <button type="submit" className={styles.btnSave}>Lưu lại</button>
+                                <button type="submit" className={styles.btnSave}>Lưu</button>
                                 <button type="button" className={styles.btnCancel} onClick={() => setIsModalOpen(false)}>Hủy</button>
                             </div>
                         </form>
