@@ -1,0 +1,66 @@
+// CÁC DÒNG IMPORT NÀY RẤT QUAN TRỌNG, KHÔNG ĐƯỢC THIẾU
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+// Import các trang của Khách hàng
+import Header from './components/Header';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import ProductDetail from './pages/ProductDetail';
+import Cart from './pages/Cart';
+import Register from './pages/Register'; 
+import Profile from './pages/Profile'; 
+import MyOrders from './pages/MyOrders';
+import MyReturns from './pages/MyReturns';
+import ChangePassword from './pages/ChangePassword';
+import Checkout from './pages/Checkout';
+
+// BỔ SUNG 3 TRANG MỚI CHO LUỒNG ĐƠN HÀNG
+import OrderDetail from './pages/OrderDetail';
+import Review from './pages/Review';
+import ReturnRequest from './pages/ReturnRequest';
+
+// Import các trang của Admin
+import AdminLayout from './pages/Admin/AdminLayout';
+import AdminDashboard from './pages/Admin/AdminDashboard';
+import AdminOrder from './pages/Admin/AdminOrder';
+import AdminProduct from './pages/Admin/AdminProduct'; 
+import AdminAccount from './pages/Admin/AdminAccount';
+import AdminComment from './pages/Admin/AdminComment';
+import AdminReturn from './pages/Admin/AdminReturn';
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* ROUTE CHO KHÁCH HÀNG */}
+        <Route path="/" element={<><Header /><Home /></>} />
+        <Route path="/product/:id" element={<><Header /><ProductDetail /></>} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} /> 
+        <Route path="/checkout" element={<><Header /><Checkout /></>} />  
+        <Route path="/cart" element={<><Header /><Cart /></>} />
+        <Route path="/profile" element={<><Header /><Profile /></>} />
+        <Route path="/change-password" element={<><Header /><ChangePassword /></>} />
+        
+        {/* QUẢN LÝ ĐƠN HÀNG & HẬU MÃI */}
+        <Route path="/my-orders" element={<><Header /><MyOrders /></>} />
+        <Route path="/my-returns" element={<><Header /><MyReturns /></>} />
+        <Route path="/order-detail/:id" element={<><Header /><OrderDetail /></>} />
+        <Route path="/review/:id" element={<><Header /><Review /></>} />
+        <Route path="/return/:id" element={<><Header /><ReturnRequest /></>} />
+
+        {/* ROUTE CHO ADMIN */}
+        <Route path="/admin" element={<AdminLayout />}>
+           <Route index element={<AdminDashboard />} />
+           <Route path="orders" element={<AdminOrder />} />
+           <Route path="products" element={<AdminProduct />} />
+           <Route path="accounts" element={<AdminAccount />} />
+           <Route path="comments" element={<AdminComment />} />
+           <Route path="returns" element={<AdminReturn />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;

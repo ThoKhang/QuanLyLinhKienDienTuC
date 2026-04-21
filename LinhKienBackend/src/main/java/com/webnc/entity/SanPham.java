@@ -3,6 +3,7 @@ package com.webnc.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "san_pham")
@@ -31,7 +32,7 @@ public class SanPham {
     private String hinhAnh;
 
     @Column(name = "thong_so_ky_thuat", columnDefinition = "NVARCHAR(MAX)")
-    private String thongSoKyThuat; // Sẽ lưu chuỗi JSON ở đây
+    private String thongSoKyThuat;
 
     // Khóa ngoại liên kết tới bảng Danh Mục
     @ManyToOne
@@ -40,4 +41,8 @@ public class SanPham {
 
     @Column(name = "ngay_tao")
     private Date ngayTao = new Date();
+    
+    // Liên kết 1-Nhiều với bảng Thông số
+    @OneToMany(mappedBy = "sanPham", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private List<ChiTietLinhKien> chiTietLinhKiens;
 }

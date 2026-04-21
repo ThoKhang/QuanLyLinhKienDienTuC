@@ -67,4 +67,10 @@ public class GioHangService {
     public void xoaKhoiGio(Long cartItemId) {
         gioHangRepository.deleteById(cartItemId);
     }
+    public void capNhatSoLuong(Long id, Integer soLuong) {
+    GioHang item = gioHangRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm trong giỏ"));
+    item.setSoLuong(soLuong);
+    gioHangRepository.save(item);
+}
 }

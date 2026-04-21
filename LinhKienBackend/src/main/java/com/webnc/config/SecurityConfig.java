@@ -1,6 +1,6 @@
 package com.webnc.config;
 
-import org.springframework.beans.factory.annotation.Autowired; // Thêm import
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -8,13 +8,16 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter; // Thêm import
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+// THÊM 3 DÒNG IMPORT NÀY:
+import org.springframework.web.cors.CorsConfiguration;
+import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // Gọi JwtFilter vào đây
     @Autowired
     private JwtFilter jwtFilter;
 
@@ -27,20 +30,26 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable()) 
-            .cors(cors -> cors.disable()) 
+            // ĐÃ SỬA DÒNG NÀY: Dặn bảo vệ mở cửa cho cổng 5173
+            .cors(cors -> cors.configurationSource(request -> {
+                CorsConfiguration config = new CorsConfiguration();
+                config.setAllowedOrigins(Collections.singletonList("http://localhost:5173")); 
+                config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                config.setAllowedHeaders(Collections.singletonList("*"));
+                return config;
+            }))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll() 
                 .requestMatchers("/error").permitAll() 
-                .requestMatchers("/api/admin/**").hasAuthority("ADMIN") // Bắt buộc quyền ADMIN
+                .requestMatchers("/api/admin/**").hasAuthority("ADMIN") 
                 .requestMatchers("/api/public/**").permitAll()
+                .requestMatchers("/images/**").permitAll()
+                .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated() 
-                
             );
 
-        // LẮP MÁY QUÉT: Yêu cầu Spring chạy cái bộ lọc Token của mình trước
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
-    
 }

@@ -17,15 +17,12 @@ public class GioHangController {
     @Autowired
     private GioHangService gioHangService;
 
-    // API Xem giỏ hàng cá nhân (Bắt buộc có Token)
     @GetMapping
     public ResponseEntity<List<GioHang>> xemGioHang(Principal principal) {
-        // principal.getName() chính là tenDangNhap được giải mã từ Token
         String tenDangNhap = principal.getName();
         return ResponseEntity.ok(gioHangService.xemGioHang(tenDangNhap));
     }
 
-    // API Thêm sản phẩm vào giỏ
     @PostMapping("/them")
     public ResponseEntity<?> themVaoGio(Principal principal, 
                                         @RequestParam Long sanPhamId, 
@@ -39,7 +36,17 @@ public class GioHangController {
         }
     }
 
-    // API Xóa 1 món khỏi giỏ
+    // Đã sửa lại đường dẫn, loại bỏ chữ /api/gio-hang bị lặp
+    @PutMapping("/cap-nhat/{id}")
+    public ResponseEntity<?> capNhatSoLuong(@PathVariable Long id, @RequestParam Integer soLuong) {
+        try {
+            gioHangService.capNhatSoLuong(id, soLuong);
+            return ResponseEntity.ok("Cập nhật số lượng thành công");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @DeleteMapping("/xoa/{cartItemId}")
     public ResponseEntity<?> xoaKhoiGio(@PathVariable Long cartItemId) {
         gioHangService.xoaKhoiGio(cartItemId);

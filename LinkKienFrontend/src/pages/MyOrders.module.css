@@ -1,0 +1,75 @@
+.container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.title {
+    font-size: 24px;
+    color: #1e293b;
+    margin-bottom: 25px;
+}
+
+.orderList {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.orderCard {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border: 1px solid #f1f5f9;
+}
+
+.orderHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+}
+
+.status {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.orderBody p {
+    margin: 8px 0;
+    font-size: 14px;
+    color: #475569;
+}
+
+.price {
+    color: #ef4444;
+    font-size: 16px;
+}
+
+.btnDetail {
+    margin-top: 10px;
+    background: transparent;
+    border: 1px solid #6366f1;
+    color: #6366f1;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btnDetail:hover {
+    background: #6366f1;
+    color: white;
+}
+
+.empty, .loading {
+    text-align: center;
+    padding: 50px;
+    color: #64748b;
+}

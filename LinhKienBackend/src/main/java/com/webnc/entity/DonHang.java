@@ -31,6 +31,41 @@ public class DonHang {
     @Column(name = "trang_thai_don")
     private String trangThaiDon = "CHO_XAC_NHAN";
 
+    // MỚI BỔ SUNG: Thêm trường trạng thái thanh toán để hết lỗi ở Service
+    @Column(name = "trang_thai_thanh_toan", length = 50)
+    private String trangThaiThanhToan = "CHUA_THANH_TOAN";
+
     @Column(name = "ghi_chu", columnDefinition = "NVARCHAR(MAX)")
     private String ghiChu;
+
+    // =========================================================
+    // VIẾT SẴN GETTER & SETTER ĐỂ TRỊ BỆNH NETBEANS KHÔNG NHẬN LOMBOK
+    // =========================================================
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public NguoiDung getNguoiDung() { return nguoiDung; }
+    public void setNguoiDung(NguoiDung nguoiDung) { this.nguoiDung = nguoiDung; }
+
+    public Date getNgayDat() { return ngayDat; }
+    public void setNgayDat(Date ngayDat) { this.ngayDat = ngayDat; }
+
+    public Double getTongTien() { return tongTien; }
+    public void setTongTien(Double tongTien) { this.tongTien = tongTien; }
+
+    public String getDiaChiGiaoHang() { return diaChiGiaoHang; }
+    public void setDiaChiGiaoHang(String diaChiGiaoHang) { this.diaChiGiaoHang = diaChiGiaoHang; }
+
+    public String getPhuongThucThanhToan() { return phuongThucThanhToan; }
+    public void setPhuongThucThanhToan(String phuongThucThanhToan) { this.phuongThucThanhToan = phuongThucThanhToan; }
+
+    public String getTrangThaiDon() { return trangThaiDon; }
+    public void setTrangThaiDon(String trangThaiDon) { this.trangThaiDon = trangThaiDon; }
+
+    public String getTrangThaiThanhToan() { return trangThaiThanhToan; }
+    public void setTrangThaiThanhToan(String trangThaiThanhToan) { this.trangThaiThanhToan = trangThaiThanhToan; }
+
+    public String getGhiChu() { return ghiChu; }
+    public void setGhiChu(String ghiChu) { this.ghiChu = ghiChu; }
 }
