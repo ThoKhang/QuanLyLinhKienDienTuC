@@ -1,0 +1,154 @@
+.container {
+  padding: 24px;
+  background-color: #f8fafc; /* Màu nền xám cực nhạt */
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.header h1 {
+  font-size: 24px;
+  color: #1e293b; /* Slate 800 */
+}
+
+/* Nút bấm hiện đại */
+.btnAdd {
+  background-color: #6366f1; /* Indigo 500 */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2);
+}
+
+.btnAdd:hover {
+  background-color: #4f46e5;
+  transform: translateY(-1px);
+}
+
+/* Bảng dữ liệu Modern */
+.tableContainer {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.productTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.productTable th {
+  background-color: #f1f5f9;
+  padding: 16px;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.productTable td {
+  padding: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+  font-size: 14px;
+}
+
+.imgPreview {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+/* Badge trạng thái */
+.statusBadge {
+  padding: 4px 8px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.inStock { background: #dcfce7; color: #166534; }
+.outStock { background: #fee2e2; color: #991b1b; }
+
+.btnAction {
+  padding: 6px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  margin-right: 8px;
+  border-radius: 4px;
+}
+
+.btnEdit { color: #6366f1; }
+.btnDelete { color: #ef4444; }
+/* (Giữ lại các style Table từ tin nhắn trước) */
+
+.modalOverlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    width: 500px;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+}
+
+.modal form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.modal input, .modal textarea {
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-family: inherit;
+}
+
+.modalActions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btnSave {
+    flex: 2;
+    background: #6366f1;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btnCancel {
+    flex: 1;
+    background: #f1f5f9;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}

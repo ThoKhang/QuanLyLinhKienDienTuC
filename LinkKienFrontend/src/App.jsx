@@ -10,6 +10,7 @@ import ProductDetail from './pages/ProductDetail';
 // Import các trang của Admin
 import AdminLayout from './pages/Admin/AdminLayout';
 import AdminDashboard from './pages/Admin/AdminDashboard';
+import AdminProduct from './pages/Admin/AdminProduct'; // Khang đã import đúng ở đây
 
 function App() {
   return (
@@ -23,7 +24,10 @@ function App() {
         {/* ROUTE CHO ADMIN */}
         <Route path="/admin" element={<AdminLayout />}>
            <Route index element={<AdminDashboard />} />
-           <Route path="products" element={<div>Trang Quản lý Sản phẩm</div>} />
+           
+           {/* ĐÃ SỬA DÒNG NÀY: Dùng <AdminProduct /> thay vì <div> */}
+           <Route path="products" element={<AdminProduct />} />
+           
            <Route path="accounts" element={<div>Trang Quản lý Tài khoản</div>} />
            <Route path="comments" element={<div>Trang Quản lý Bình luận</div>} />
            <Route path="returns" element={<div>Trang Yêu cầu Đổi trả</div>} />

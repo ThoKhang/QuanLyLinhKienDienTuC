@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .requestMatchers("/error").permitAll() 
                 .requestMatchers("/api/admin/**").hasAuthority("ADMIN") 
                 .requestMatchers("/api/public/**").permitAll()
+                .requestMatchers("/images/**").permitAll()    
                 .anyRequest().authenticated() 
             );
 
