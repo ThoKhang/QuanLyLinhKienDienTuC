@@ -7,10 +7,14 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
+import Register from './pages/Register'; // ĐÃ SỬA: Đổi tên import từ Cart thành Register
+import Profile from './pages/Profile'; 
+import MyOrders from './pages/MyOrders';
+import MyReturns from './pages/MyReturns';
 // Import các trang của Admin
 import AdminLayout from './pages/Admin/AdminLayout';
 import AdminDashboard from './pages/Admin/AdminDashboard';
-import AdminProduct from './pages/Admin/AdminProduct'; // Khang đã import đúng ở đây
+import AdminProduct from './pages/Admin/AdminProduct'; 
 import AdminAccount from './pages/Admin/AdminAccount';
 import AdminComment from './pages/Admin/AdminComment';
 import AdminReturn from './pages/Admin/AdminReturn';
@@ -23,13 +27,19 @@ function App() {
         <Route path="/" element={<><Header /><Home /></>} />
         <Route path="/product/:id" element={<><Header /><ProductDetail /></>} />
         <Route path="/login" element={<Login />} />
+        
+        {/* ĐÃ BỔ SUNG: Route dành riêng cho trang Đăng ký */}
+        <Route path="/register" element={<Register />} /> 
+
         <Route path="/cart" element={<><Header /><Cart /></>} />
+        <Route path="/profile" element={<><Header /><Profile /></>} />
+        <Route path="/my-orders" element={<><Header /><MyOrders /></>} />
+        <Route path="/my-returns" element={<><Header /><MyReturns /></>} />
+
         {/* ROUTE CHO ADMIN */}
         <Route path="/admin" element={<AdminLayout />}>
            <Route index element={<AdminDashboard />} />
            <Route path="products" element={<AdminProduct />} />
-           
-           {/* ĐÃ SỬA: Thay thế div bằng các Component Khang đã import */}
            <Route path="accounts" element={<AdminAccount />} />
            <Route path="comments" element={<AdminComment />} />
            <Route path="returns" element={<AdminReturn />} />
@@ -39,5 +49,4 @@ function App() {
   );
 }
 
-// DÒNG NÀY ĐỂ FIX LỖI "does not provide an export named 'default'"
 export default App;

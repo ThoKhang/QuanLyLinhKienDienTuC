@@ -1,73 +1,110 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react'; // Thêm useState, useEffect
+import { useState, useEffect } from 'react';
 import axiosClient from '../api/axiosClient';
 import styles from './Header.module.css';
 
 function Header() {
-  const navigate = useNavigate();
-  const username = localStorage.getItem('username');
-  const [cartCount, setCartCount] = useState(0);
+    const navigate = useNavigate();
+    const token = localStorage.getItem('token');
+    const [user, setUser] = useState(null); // Lưu thông tin User đầy đủ
+    const [cartCount, setCartCount] = useState(0);
+    const [showDropdown, setShowDropdown] = useState(false); // Trạng thái đóng/mở menu
+    const [keyword, setKeyword] = useState(''); // Lưu từ khóa tìm kiếm
 
-  // Hàm lấy số lượng từ API
-  const fetchCartCount = async () => {
-    if (!username) return;
-    try {
-      const response = await axiosClient.get('/gio-hang');
-      // Tính tổng số lượng (soLuong) của tất cả item trong giỏ
-      const total = response.data.reduce((sum, item) => sum + item.soLuong, 0);
-      setCartCount(total);
-    } catch (error) {
-      console.error("Lỗi lấy số lượng giỏ hàng");
-    }
-  };
+    // 1. Lấy thông tin họ tên đầy đủ từ API Profile
+    useEffect(() => {
+        if (token) {
+            axiosClient.get('/user/profile')
+                .then(res => setUser(res.data))
+                .catch(() => {
+                    localStorage.removeItem('token');
+                    setUser(null);
+                });
+        }
+    }, [token]);
 
-  useEffect(() => {
-    fetchCartCount();
-    // Lắng nghe sự kiện "cartUpdated" khi người dùng thêm hàng ở trang khác
-    window.addEventListener('cartUpdated', fetchCartCount);
-    return () => window.removeEventListener('cartUpdated', fetchCartCount);
-  }, [username]);
+    // 2. Lấy số lượng giỏ hàng (Logic của Khang rất tốt, mình giữ nguyên)
+    const fetchCartCount = async () => {
+        if (!token) return;
+        try {
+            const response = await axiosClient.get('/gio-hang');
+            const total = response.data.reduce((sum, item) => sum + item.soLuong, 0);
+            setCartCount(total);
+        } catch (error) { console.error("Lỗi lấy giỏ hàng"); }
+    };
 
-  const dangXuat = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
-    setCartCount(0);
-    navigate('/login');
-  };
+    useEffect(() => {
+        fetchCartCount();
+        window.addEventListener('cartUpdated', fetchCartCount);
+        return () => window.removeEventListener('cartUpdated', fetchCartCount);
+    }, [token]);
 
-  return (
-    <div className={styles.headerBar}>
-      <Link to="/" className={styles.logo}>KhStore</Link>
-      <div className={styles.navGroup}>
-        <Link to="/" className={styles.navLink}>Trang chủ</Link>
-        
-        {username && (
-            <Link to="/cart" className={styles.navLink} style={{color: '#e53935', position: 'relative'}}>
-                🛒 Giỏ hàng
-                {cartCount > 0 && (
-                  <span style={{
-                    position: 'absolute', top: '-10px', right: '-10px',
-                    backgroundColor: 'red', color: 'white', borderRadius: '50%',
-                    padding: '2px 6px', fontSize: '12px'
-                  }}>{cartCount}</span>
+    // 3. Xử lý tìm kiếm
+    const handleSearch = (e) => {
+        e.preventDefault();
+        if (keyword.trim()) {
+            navigate(`/?search=${keyword}`); // Chuyển hướng kèm tham số search
+        } else {
+            navigate('/');
+        }
+    };
+
+    const dangXuat = () => {
+        localStorage.clear();
+        setUser(null);
+        setCartCount(0);
+        navigate('/login');
+    };
+
+    return (
+        <div className={styles.headerBar}>
+            <Link to="/" className={styles.logo}>KhStore</Link>
+
+            {/* THANH TÌM KIẾM MỚI */}
+            <form className={styles.searchBox} onSubmit={handleSearch}>
+                <input 
+                    type="text" 
+                    placeholder="Tìm linh kiện PC..." 
+                    value={keyword}
+                    onChange={(e) => setKeyword(e.target.value)}
+                />
+                <button type="submit">🔍</button>
+            </form>
+
+            <div className={styles.navGroup}>
+                {token && (
+                    <Link to="/cart" className={styles.navLink} style={{color: '#6366f1', position: 'relative'}}>
+                        🛒 Giỏ hàng
+                        {cartCount > 0 && <span className={styles.cartBadge}>{cartCount}</span>}
+                    </Link>
                 )}
-            </Link>
-        )}
-        
-        {username ? (
-          <>
-            <span style={{ color: '#666' }}>Xin chào, <b>{username}</b>!</span>
-            <button onClick={dangXuat} className={styles.btnLogout}>Đăng xuất</button>
-          </>
-        ) : (
-          <>
-            <Link to="/login" className={styles.navLink}>Đăng nhập</Link>
-            <Link to="/register" className={styles.btnRegister}>Đăng ký</Link>
-          </>
-        )}
-      </div>
-    </div>
-  );
+                
+                {user ? (
+                    <div className={styles.userContainer}>
+                        <div className={styles.userTrigger} onClick={() => setShowDropdown(!showDropdown)}>
+                            Xin chào, <b>{user.hoTen}</b> ▾
+                        </div>
+                        
+                        {/* MENU XỔ XUỐNG (DROPDOWN) */}
+                        {showDropdown && (
+                            <div className={styles.userDropdown}>
+                                <Link to="/profile" onClick={() => setShowDropdown(false)}>👤 Tài khoản</Link>
+                                <Link to="/my-orders" onClick={() => setShowDropdown(false)}>📦 Lịch sử mua hàng</Link>
+                                <Link to="/my-returns" onClick={() => setShowDropdown(false)}>🔄 Đổi trả & Bảo hành</Link>
+                                <hr />
+                                <button onClick={dangXuat} className={styles.btnDropdownLogout}>🚪 Đăng xuất</button>
+                            </div>
+                        )}
+                    </div>
+                ) : (
+                    <div style={{display: 'flex', gap: '10px'}}>
+                        <Link to="/login" className={styles.navLink}>Đăng nhập</Link>
+                        <Link to="/register" className={styles.btnRegister}>Đăng ký</Link>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
 }
 
 export default Header;

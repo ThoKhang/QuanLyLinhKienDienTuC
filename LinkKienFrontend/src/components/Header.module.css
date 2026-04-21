@@ -44,3 +44,105 @@
   cursor: pointer;
   font-weight: bold;
 }
+.userArea {
+    position: relative;
+    cursor: pointer;
+}
+
+.greeting {
+    color: #1e293b;
+    font-size: 15px;
+}
+
+.dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 200px;
+    padding: 10px 0;
+    z-index: 100;
+    margin-top: 10px;
+    border: 1px solid #f1f5f9;
+}
+
+.dropdown a, .dropdown button {
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #475569;
+    font-size: 14px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.dropdown a:hover, .dropdown button:hover {
+    background: #f8fafc;
+    color: #6366f1;
+}
+
+.dropdown hr {
+    border: 0;
+    border-top: 1px solid #f1f5f9;
+    margin: 5px 0;
+}
+/* Thanh tìm kiếm */
+.searchBox {
+    display: flex;
+    background: #f1f5f9;
+    padding: 6px 15px;
+    border-radius: 20px;
+    width: 350px;
+    border: 1px solid #e2e8f0;
+}
+.searchBox input { border: none; background: transparent; outline: none; flex: 1; }
+.searchBox button { background: none; border: none; cursor: pointer; }
+
+/* Khu vực User & Dropdown */
+.userContainer { position: relative; }
+.userTrigger {
+    cursor: pointer;
+    background: #f8fafc;
+    padding: 8px 15px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    font-size: 14px;
+}
+.userDropdown {
+    position: absolute;
+    top: 120%;
+    right: 0;
+    background: white;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    width: 200px;
+    z-index: 999;
+    padding: 8px 0;
+    border: 1px solid #f1f5f9;
+}
+.userDropdown a, .userDropdown button {
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #475569;
+    font-size: 14px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+.userDropdown a:hover, .userDropdown button:hover { background: #f1f5f9; color: #6366f1; }
+.userDropdown hr { border: 0; border-top: 1px solid #f1f5f9; margin: 5px 0; }
+
+/* Badge giỏ hàng */
+.cartBadge {
+    position: absolute; top: -10px; right: -12px;
+    background: #ef4444; color: white; border-radius: 50%;
+    padding: 2px 6px; fontSize: 10px; font-weight: bold;
+}

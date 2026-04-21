@@ -1,48 +1,52 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Thêm import này
+import { useNavigate, useLocation } from 'react-router-dom'; // Thêm useLocation
 import axiosClient from '../api/axiosClient';
 import styles from './Home.module.css';
 
 function Home() {
     const [sanPhams, setSanPhams] = useState([]);
-    const navigate = useNavigate(); // Dùng để chuyển hướng
+    const navigate = useNavigate();
+    const location = useLocation(); // Dùng để lấy tham số ?search=... trên URL
 
     useEffect(() => {
         const layDuLieu = async () => {
             try {
-                const response = await axiosClient.get('/public/san-pham');
+                // Lấy từ khóa search từ URL
+                const searchParams = new URLSearchParams(location.search);
+                const query = searchParams.get('search');
+
+                let response;
+                if (query) {
+                    // Nếu có tìm kiếm: Gọi API search mà Khang đã làm ở Backend
+                    response = await axiosClient.get(`/public/san-pham/search?ten=${query}`);
+                } else {
+                    // Nếu không: Lấy tất cả như cũ
+                    response = await axiosClient.get('/public/san-pham');
+                }
                 setSanPhams(response.data);
             } catch (error) {
                 console.error('Lỗi khi lấy sản phẩm:', error);
             }
         };
         layDuLieu();
-    }, []);
+    }, [location.search]); // Chạy lại mỗi khi URL thay đổi (người dùng tìm kiếm từ khóa mới)
 
     const formatTien = (tien) => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(tien);
     };
 
-    // LOGIC THÊM VÀO GIỎ HÀNG
     const themVaoGio = async (sanPhamId) => {
         const token = localStorage.getItem('token');
-        
         if (!token) {
             alert('Vui lòng đăng nhập để mua hàng!');
             navigate('/login');
             return;
         }
-
         try {
-            // Gọi API thêm vào giỏ
             await axiosClient.post(`/gio-hang/them?sanPhamId=${sanPhamId}&soLuong=1`);
-            
-            // BẮN SỰ KIỆN: Để Header nhận được và cập nhật số lượng badge ngay lập tức
             window.dispatchEvent(new Event('cartUpdated')); 
-            
             alert('Đã thêm vào giỏ hàng thành công!');
         } catch (error) {
-            console.error("Lỗi thêm giỏ hàng:", error);
             alert('Không thể thêm vào giỏ hàng. Vui lòng thử lại!');
         }
     };
@@ -53,27 +57,31 @@ function Home() {
             <p className={styles.subTitle}>Nâng tầm sức mạnh cỗ máy của bạn</p>
 
             <div className={styles.productGrid}>
-                {sanPhams.map((sp) => (
-                    <div className={styles.productItem} key={sp.id}>
-                        <img 
-                            className={styles.productImg} 
-                            src={sp.hinhAnh || "link_anh_mac_dinh"} 
-                            alt={sp.tenSanPham} 
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => navigate(`/product/${sp.id}`)} // Chuyển sang trang chi tiết
-                        />
-                        <h3 className={styles.productName}>{sp.tenSanPham}</h3>
-                        <p className={styles.productDesc}>{sp.moTa}</p>
-                        
-                        <div className={styles.priceRow}>
-                            <span className={styles.productPrice}>{formatTien(sp.giaBan)}</span>
-                            {/* Gắn sự kiện onClick vào nút */}
-                            <button className={styles.btnCart} onClick={() => themVaoGio(sp.id)}>
-                                Thêm vào giỏ
-                            </button>
+                {sanPhams.length === 0 ? (
+                    <p style={{ gridColumn: '1/-1', textAlign: 'center', marginTop: '20px', color: '#666' }}>
+                        Không tìm thấy linh kiện phù hợp với yêu cầu của bạn.
+                    </p>
+                ) : (
+                    sanPhams.map((sp) => (
+                        <div className={styles.productItem} key={sp.id}>
+                            <img 
+                                className={styles.productImg} 
+                                src={sp.hinhAnh || "https://via.placeholder.com/200"} 
+                                alt={sp.tenSanPham} 
+                                onClick={() => navigate(`/product/${sp.id}`)} 
+                            />
+                            <h3 className={styles.productName}>{sp.tenSanPham}</h3>
+                            <p className={styles.productDesc}>{sp.moTa}</p>
+                            
+                            <div className={styles.priceRow}>
+                                <span className={styles.productPrice}>{formatTien(sp.giaBan)}</span>
+                                <button className={styles.btnCart} onClick={() => themVaoGio(sp.id)}>
+                                    Thêm vào giỏ
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))
+                )}
             </div>
         </div>
     );

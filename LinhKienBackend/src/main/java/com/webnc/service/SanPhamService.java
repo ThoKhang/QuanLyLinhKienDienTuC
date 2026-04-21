@@ -76,4 +76,7 @@ public class SanPhamService {
         }
         sanPhamRepository.deleteById(id);
     }
+    public List<SanPham> timKiemSanPham(String ten) {
+        return sanPhamRepository.findByTenSanPhamContainingIgnoreCase(ten);
+}
 }
