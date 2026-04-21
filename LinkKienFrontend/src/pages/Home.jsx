@@ -25,8 +25,8 @@ function Home() {
 
     // LOGIC THÊM VÀO GIỎ HÀNG
     const themVaoGio = async (sanPhamId) => {
-        // Kiểm tra xem có vé (Token) chưa
         const token = localStorage.getItem('token');
+        
         if (!token) {
             alert('Vui lòng đăng nhập để mua hàng!');
             navigate('/login');
@@ -34,11 +34,16 @@ function Home() {
         }
 
         try {
-            // Gọi API Backend: Truyền id sản phẩm và mặc định số lượng = 1
+            // Gọi API thêm vào giỏ
             await axiosClient.post(`/gio-hang/them?sanPhamId=${sanPhamId}&soLuong=1`);
-            alert('Đã thêm sản phẩm vào giỏ hàng thành công!');
+            
+            // BẮN SỰ KIỆN: Để Header nhận được và cập nhật số lượng badge ngay lập tức
+            window.dispatchEvent(new Event('cartUpdated')); 
+            
+            alert('Đã thêm vào giỏ hàng thành công!');
         } catch (error) {
-            alert(error.response?.data || 'Lỗi khi thêm vào giỏ hàng');
+            console.error("Lỗi thêm giỏ hàng:", error);
+            alert('Không thể thêm vào giỏ hàng. Vui lòng thử lại!');
         }
     };
 
@@ -52,8 +57,10 @@ function Home() {
                     <div className={styles.productItem} key={sp.id}>
                         <img 
                             className={styles.productImg} 
-                            src={sp.hinhAnh || "https://img.freepik.com/free-vector/computer-processor-cpu-icon_1017-38686.jpg"} 
+                            src={sp.hinhAnh || "link_anh_mac_dinh"} 
                             alt={sp.tenSanPham} 
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => navigate(`/product/${sp.id}`)} // Chuyển sang trang chi tiết
                         />
                         <h3 className={styles.productName}>{sp.tenSanPham}</h3>
                         <p className={styles.productDesc}>{sp.moTa}</p>
