@@ -1,6 +1,7 @@
 package com.webnc.controller;
 
 import com.webnc.dto.DatHangRequest;
+import com.webnc.entity.ChiTietDonHang;
 import com.webnc.entity.DonHang;
 import com.webnc.service.DonHangService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/don-hang")
@@ -19,6 +22,8 @@ public class DonHangController {
     private DonHangService donHangService;
     @Autowired
     private com.webnc.repository.DonHangRepository donHangRepository;
+    @Autowired
+    private com.webnc.repository.ChiTietDonHangRepository chiTietRepository;
     // Đường dẫn thực tế sẽ là: /api/don-hang/thanh-toan
     @PostMapping("/thanh-toan")
     public ResponseEntity<?> thanhToan(Principal principal, @RequestBody DatHangRequest request) {
@@ -62,6 +67,25 @@ public class DonHangController {
             donHang.setTrangThaiDon(trangThaiMoi);
             donHangRepository.save(donHang);
             return ResponseEntity.ok("Cập nhật trạng thái thành công!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/chi-tiet/{id}")
+    public ResponseEntity<?> layChiTietDonHang(@PathVariable Long id) {
+        try {
+            DonHang donHang = donHangRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng"));
+
+            // Lấy danh sách sản phẩm thuộc đơn hàng này
+            List<ChiTietDonHang> chiTiets = chiTietRepository.findByDonHang_Id(id);
+
+            // Trả về một Map chứa cả thông tin Đơn hàng và danh sách Sản phẩm
+            Map<String, Object> response = new HashMap<>();
+            response.put("donHang", donHang);
+            response.put("sanPhams", chiTiets);
+
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

@@ -64,7 +64,7 @@ function Cart() {
                     <div style={{ flex: '2', display: 'flex', flexDirection: 'column', gap: '15px' }}>
                         {gioHang.map(item => (
                             <div key={item.id} style={{ display: 'flex', alignItems: 'center', background: 'white', padding: '15px', borderRadius: '12px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
-                                <img src={item.sanPham.hinhAnh || "https://via.placeholder.com/100"} alt="sp" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px' }} />
+                                <img src={item.sanPham.hinhAnh || "https://placehold.co/100x100?text=KhStore"} alt="sp" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px' }} />
                                 
                                 <div style={{ flex: 1, marginLeft: '15px' }}>
                                     <h4 style={{ margin: '0 0 5px 0', color: '#1e293b' }}>{item.sanPham.tenSanPham}</h4>

@@ -66,7 +66,7 @@ function Home() {
                         <div className={styles.productItem} key={sp.id}>
                             <img 
                                 className={styles.productImg} 
-                                src={sp.hinhAnh || "https://via.placeholder.com/200"} 
+                                src={sp.hinhAnh || "https://placehold.co/100x100?text=KhStore"} 
                                 alt={sp.tenSanPham} 
                                 onClick={() => navigate(`/product/${sp.id}`)} 
                             />

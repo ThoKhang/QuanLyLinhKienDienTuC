@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import axiosClient from '../api/axiosClient';
 import styles from './MyOrders.module.css';
-
+import { useNavigate } from 'react-router-dom';
 function MyOrders() {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    const navigate = useNavigate();
     const fetchOrders = async () => {
         try {
             // Đã sửa lại đường dẫn API cho đúng với Backend
@@ -77,7 +77,12 @@ function MyOrders() {
                             
                             {/* Nút thao tác: Sẽ thay đổi tùy theo trạng thái */}
                             <div style={{ marginTop: '15px', display: 'flex', gap: '10px' }}>
-                                <button className={styles.btnDetail}>Xem chi tiết</button>
+                                <button 
+                                    className={styles.btnDetail} 
+                                    onClick={() => navigate(`/order-detail/${order.id}`)}
+                                >
+                                    Xem chi tiết
+                                </button>
                                 
                                 {/* CHỈ HIỂN THỊ 2 NÚT NÀY KHI ĐƠN HÀNG ĐÃ GIAO */}
                                 {order.trangThaiDon === 'DA_GIAO' && (

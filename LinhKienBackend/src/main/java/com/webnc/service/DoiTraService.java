@@ -42,7 +42,7 @@ public class DoiTraService {
         yeuCau.setDonHang(donHang);
         yeuCau.setNguoiDung(user);
         yeuCau.setLyDo(request.getLyDo());
-        yeuCau.setHinhAnhMinhHoa(request.getHinhAnhMinhHoa());
+        yeuCau.setHinhAnh(request.getHinhAnhMinhHoa());
 
         return doiTraRepository.save(yeuCau);
     }

@@ -1,55 +1,40 @@
 import { useEffect, useState } from 'react';
 import axiosClient from '../api/axiosClient';
-import styles from './MyOrders.module.css'; // Tái sử dụng CSS để đồng bộ
 
 function MyReturns() {
     const [returns, setReturns] = useState([]);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchReturns = async () => {
-            try {
-                const res = await axiosClient.get('/user/my-returns');
-                setReturns(res.data);
-            } catch (err) {
-                console.error("Lỗi lấy yêu cầu đổi trả:", err);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchReturns();
+        axiosClient.get('/doi-tra/lich-su')
+            .then(res => setReturns(res.data))
+            .catch(err => console.error(err));
     }, []);
 
-    if (loading) return <div className={styles.loading}>Đang kiểm tra dữ liệu đổi trả...</div>;
+    const vietsubStatus = (status) => {
+        if(status === 'CHO_DUYET') return <span style={{color: '#d97706'}}>⏳ Chờ xử lý</span>;
+        if(status === 'DA_DUYET') return <span style={{color: '#2563eb'}}>✅ Đã duyệt - Đang lấy hàng</span>;
+        if(status === 'HOAN_TIEN') return <span style={{color: '#059669'}}>💰 Đã hoàn tiền</span>;
+        if(status === 'TU_CHOI') return <span style={{color: '#dc2626'}}>❌ Bị từ chối</span>;
+        return status;
+    };
 
     return (
-        <div className={styles.container}>
-            <h2 className={styles.title}>🔄 Yêu cầu đổi trả & Bảo hành</h2>
-            <div className={styles.orderList}>
-                {returns.length === 0 ? (
-                    <p className={styles.empty}>Bạn không có yêu cầu đổi trả nào.</p>
-                ) : (
-                    returns.map(req => (
-                        <div key={req.id} className={styles.orderCard}>
-                            <div className={styles.orderHeader}>
-                                <span>Yêu cầu cho Đơn: <b>#{req.donHang?.id}</b></span>
-                                <span className={styles.status} 
-                                      style={{ background: req.trangThai === 'CHO_XU_LY' ? '#fef3c7' : '#d1fae5', 
-                                               color: req.trangThai === 'CHO_XU_LY' ? '#92400e' : '#065f46' }}>
-                                    {req.trangThai}
-                                </span>
-                            </div>
-                            <div className={styles.orderBody}>
-                                <p>Lý do: <i>{req.lyDo}</i></p>
-                                {req.ghiChuCuaAdmin && <p>Admin phản hồi: <b style={{color: '#6366f1'}}>{req.ghiChuCuaAdmin}</b></p>}
-                                <p>Ngày gửi: {new Date(req.ngayTao).toLocaleDateString('vi-VN')}</p>
-                            </div>
+        <div style={{ maxWidth: '800px', margin: '40px auto', padding: '20px' }}>
+            <h2>🔄 Lịch sử Đổi trả & Bảo hành</h2>
+            {returns.length === 0 ? <p>Bạn chưa có yêu cầu đổi trả nào.</p> : (
+                returns.map(item => (
+                    <div key={item.id} style={{ background: 'white', padding: '20px', borderRadius: '12px', marginBottom: '15px', borderLeft: '5px solid #dc2626' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #eee', paddingBottom: '10px', marginBottom: '10px' }}>
+                            <b>Mã yêu cầu: #{item.id} (Đơn gốc: #{item.donHang.id})</b>
+                            <b>Trạng thái: {vietsubStatus(item.trangThai)}</b>
                         </div>
-                    ))
-                )}
-            </div>
+                        <p><b>Lý do:</b> {item.lyDo}</p>
+                        <p><b>Chi tiết:</b> {item.chiTiet}</p>
+                        {item.hinhAnh && <img src={item.hinhAnh} alt="bằng chứng" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px' }} />}
+                    </div>
+                ))
+            )}
         </div>
     );
 }
-
 export default MyReturns;

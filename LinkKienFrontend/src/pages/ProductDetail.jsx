@@ -105,11 +105,15 @@ function ProductDetail() {
                                 <span className={styles.starRating}>{renderStars(rv.soSao)}</span>
                             </div>
                             <p className={styles.reviewContent}>{rv.noiDung}</p>
-                            {rv.hinhAnhs && rv.hinhAnhs.length > 0 && (
+                            {rv.hinhAnh && (
                                 <div className={styles.reviewImages}>
-                                    {rv.hinhAnhs.map((img, index) => (
-                                        <img key={index} src={img.urlHinhAnh} alt="Review thực tế" className={styles.reviewImg} onClick={() => window.open(img.urlHinhAnh, '_blank')} />
-                                    ))}
+                                    <img 
+                                        src={rv.hinhAnh} 
+                                        alt="Review thực tế" 
+                                        className={styles.reviewImg} 
+                                        style={{ cursor: 'pointer', maxWidth: '200px', borderRadius: '8px' }}
+                                        onClick={() => window.open(rv.hinhAnh, '_blank')} 
+                                    />
                                 </div>
                             )}
                             <div className={styles.reviewFooter}>
