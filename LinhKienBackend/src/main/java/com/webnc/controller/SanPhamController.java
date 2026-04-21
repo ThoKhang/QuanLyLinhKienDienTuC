@@ -16,7 +16,6 @@ public class SanPhamController {
 
     @Autowired
     private SanPhamService sanPhamService;
-    
     // ==========================================
     // API PUBLIC (Ai cũng xem được, không cần Token)
     // ==========================================
@@ -79,6 +78,19 @@ public class SanPhamController {
             return ResponseEntity.ok("Đã xóa sản phẩm thành công!");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    // ==========================================
+    // API TÌM KIẾM SẢN PHẨM (MỚI BỔ SUNG)
+    // ==========================================
+    @GetMapping("/api/public/san-pham/search")
+    public ResponseEntity<?> timKiemSanPham(@RequestParam("ten") String ten) {
+        try {
+            // Khang dùng repository đã có hàm findByTenSanPhamContainingIgnoreCase
+            List<SanPham> ketQua = sanPhamService.timKiemSanPham(ten);
+            return ResponseEntity.ok(ketQua);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Lỗi tìm kiếm: " + e.getMessage());
         }
     }
 }

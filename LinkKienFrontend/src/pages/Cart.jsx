@@ -1,103 +1,144 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axiosClient from '../api/axiosClient';
+import styles from './Cart.module.css';
 
 function Cart() {
-    const [gioHang, setGioHang] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
+  const [gioHang, setGioHang] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-    const layGioHang = async () => {
-        try {
-            const res = await axiosClient.get('/gio-hang');
-            setGioHang(res.data);
-        } catch (error) { 
-            console.error("Lỗi tải giỏ hàng:", error); 
-        } finally {
-            setLoading(false);
-        }
-    };
+  const layGioHang = async () => {
+    try {
+      const res = await axiosClient.get('/gio-hang');
+      setGioHang(res.data);
+    } catch (error) {
+      console.error('Lỗi tải giỏ hàng:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    useEffect(() => { layGioHang(); }, []);
+  useEffect(() => { layGioHang(); }, []);
 
-    // HÀM TĂNG GIẢM SỐ LƯỢNG
-    const capNhatSoLuong = async (id, soLuongMoi, soLuongTonKho) => {
-        if (soLuongMoi < 1) return; // Không cho giảm xuống dưới 1
-        if (soLuongMoi > soLuongTonKho) {
-            alert("Rất tiếc, vượt quá số lượng trong kho!"); 
-            return;
-        }
-        try {
-            await axiosClient.put(`/gio-hang/cap-nhat/${id}?soLuong=${soLuongMoi}`);
-            layGioHang(); // Gọi lại API để cập nhật tổng tiền
-            window.dispatchEvent(new Event('cartUpdated')); // Cập nhật số trên Header
-        } catch (error) { 
-            alert('Lỗi cập nhật số lượng'); 
-        }
-    };
+  const capNhatSoLuong = async (id, soLuongMoi, soLuongTonKho) => {
+    if (soLuongMoi < 1) return;
+    if (soLuongMoi > soLuongTonKho) {
+      alert('Rất tiếc, vượt quá số lượng trong kho!');
+      return;
+    }
+    try {
+      await axiosClient.put(`/gio-hang/cap-nhat/${id}?soLuong=${soLuongMoi}`);
+      layGioHang();
+      window.dispatchEvent(new Event('cartUpdated'));
+    } catch {
+      alert('Lỗi cập nhật số lượng');
+    }
+  };
 
-    const xoaSanPham = async (id) => {
-        if (window.confirm("Bỏ sản phẩm này khỏi giỏ?")) {
-            await axiosClient.delete(`/gio-hang/xoa/${id}`);
-            layGioHang();
-            window.dispatchEvent(new Event('cartUpdated')); 
-        }
-    };
+  const xoaSanPham = async (id) => {
+    if (window.confirm('Bỏ sản phẩm này khỏi giỏ?')) {
+      await axiosClient.delete(`/gio-hang/xoa/${id}`);
+      layGioHang();
+      window.dispatchEvent(new Event('cartUpdated'));
+    }
+  };
 
-    const tinhTongTien = () => gioHang.reduce((t, item) => t + (item.sanPham.giaBan * item.soLuong), 0);
-    const formatTien = (tien) => new Intl.NumberFormat('vi-VN').format(tien) + ' ₫';
+  const tinhTongTien = () =>
+    gioHang.reduce((t, item) => t + item.sanPham.giaBan * item.soLuong, 0);
 
-    if (loading) return <div style={{textAlign: 'center', marginTop: '50px'}}>Đang tải giỏ hàng...</div>;
+  const formatTien = (tien) =>
+    new Intl.NumberFormat('vi-VN').format(tien) + ' ₫';
 
-    return (
-        <div style={{ maxWidth: '900px', margin: '40px auto', padding: '20px' }}>
-            <h2 style={{ color: '#1e293b', marginBottom: '20px' }}>Giỏ hàng của bạn ({gioHang.length} sản phẩm)</h2>
-            
-            {gioHang.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '50px', background: 'white', borderRadius: '12px' }}>
-                    <p style={{ fontSize: '18px', color: '#64748b' }}>Giỏ hàng đang trống.</p>
-                    <Link to="/" style={{ display: 'inline-block', marginTop: '15px', padding: '10px 20px', background: '#6366f1', color: 'white', textDecoration: 'none', borderRadius: '8px' }}>Mua sắm ngay</Link>
+  if (loading) return (
+    <div style={{ textAlign: 'center', padding: '80px', fontSize: 16, color: '#64748b', fontFamily: 'DM Sans,sans-serif' }}>
+      Đang tải giỏ hàng...
+    </div>
+  );
+
+  return (
+    <div className={styles.pageWrapper}>
+      <div className={styles.inner}>
+        <h2 className={styles.pageTitle}>
+          Giỏ hàng
+          {gioHang.length > 0 && (
+            <span className={styles.cartCount}>{gioHang.length} sản phẩm</span>
+          )}
+        </h2>
+
+        {gioHang.length === 0 ? (
+          <div className={styles.emptyCard}>
+            <div className={styles.emptyIcon}>🛒</div>
+            <p className={styles.emptyText}>Giỏ hàng của bạn đang trống.</p>
+            <Link to="/" className={styles.btnShopNow}>Khám phá linh kiện ngay</Link>
+          </div>
+        ) : (
+          <div className={styles.layout}>
+            {/* DANH SÁCH SẢN PHẨM */}
+            <div className={styles.itemsList}>
+              {gioHang.map((item, i) => (
+                <div
+                  key={item.id}
+                  className={styles.cartItem}
+                  style={{ animationDelay: `${i * 0.06}s` }}
+                >
+                  <img
+                    src={item.sanPham.hinhAnh || 'https://placehold.co/80x80?text=SP'}
+                    alt={item.sanPham.tenSanPham}
+                    className={styles.itemImg}
+                  />
+                  <div className={styles.itemInfo}>
+                    <h4 className={styles.itemName}>{item.sanPham.tenSanPham}</h4>
+                    <div className={styles.itemPrice}>{formatTien(item.sanPham.giaBan)}</div>
+                  </div>
+
+                  <div className={styles.qtyControl}>
+                    <button
+                      className={styles.qtyBtn}
+                      onClick={() => capNhatSoLuong(item.id, item.soLuong - 1, item.sanPham.soLuongTon)}
+                    >−</button>
+                    <span className={styles.qtyNum}>{item.soLuong}</span>
+                    <button
+                      className={styles.qtyBtn}
+                      onClick={() => capNhatSoLuong(item.id, item.soLuong + 1, item.sanPham.soLuongTon)}
+                    >+</button>
+                  </div>
+
+                  <button className={styles.btnRemove} onClick={() => xoaSanPham(item.id)}>
+                    🗑 Xóa
+                  </button>
                 </div>
-            ) : (
-                <div style={{ display: 'flex', gap: '30px', flexWrap: 'wrap' }}>
-                    {/* DANH SÁCH SẢN PHẨM */}
-                    <div style={{ flex: '2', display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                        {gioHang.map(item => (
-                            <div key={item.id} style={{ display: 'flex', alignItems: 'center', background: 'white', padding: '15px', borderRadius: '12px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
-                                <img src={item.sanPham.hinhAnh || "https://placehold.co/100x100?text=KhStore"} alt="sp" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px' }} />
-                                
-                                <div style={{ flex: 1, marginLeft: '15px' }}>
-                                    <h4 style={{ margin: '0 0 5px 0', color: '#1e293b' }}>{item.sanPham.tenSanPham}</h4>
-                                    <div style={{ color: '#ef4444', fontWeight: 'bold' }}>{formatTien(item.sanPham.giaBan)}</div>
-                                </div>
-                                
-                                {/* Nút tăng giảm */}
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', background: '#f1f5f9', padding: '5px 10px', borderRadius: '8px' }}>
-                                    <button onClick={() => capNhatSoLuong(item.id, item.soLuong - 1, item.sanPham.soLuongTon)} style={{ border: 'none', background: 'none', cursor: 'pointer', fontSize: '18px', padding: '0 5px' }}>-</button>
-                                    <b style={{ width: '20px', textAlign: 'center' }}>{item.soLuong}</b>
-                                    <button onClick={() => capNhatSoLuong(item.id, item.soLuong + 1, item.sanPham.soLuongTon)} style={{ border: 'none', background: 'none', cursor: 'pointer', fontSize: '18px', padding: '0 5px' }}>+</button>
-                                </div>
+              ))}
+            </div>
 
-                                <button onClick={() => xoaSanPham(item.id)} style={{ marginLeft: '20px', color: '#ef4444', border: 'none', background: '#fee2e2', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer' }}>Xóa</button>
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* TỔNG TIỀN & THANH TOÁN */}
-                    <div style={{ flex: '1', minWidth: '250px', background: 'white', padding: '20px', borderRadius: '12px', height: 'fit-content', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
-                        <h3 style={{ marginTop: 0 }}>Tổng cộng</h3>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '20px', margin: '20px 0' }}>
-                            <span>Tạm tính:</span>
-                            <b style={{ color: '#6366f1' }}>{formatTien(tinhTongTien())}</b>
-                        </div>
-                        <button onClick={() => navigate('/checkout')} style={{ width: '100%', padding: '15px', background: '#6366f1', color: 'white', border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer' }}>
-                            TIẾN HÀNH THANH TOÁN
-                        </button>
-                    </div>
-                </div>
-            )}
-        </div>
-    );
+            {/* TỔNG TIỀN */}
+            <div className={styles.summaryPanel}>
+              <h3 className={styles.summaryTitle}>Tóm tắt đơn hàng</h3>
+              <div className={styles.summaryRow}>
+                <span>Tạm tính ({gioHang.length} sản phẩm)</span>
+                <span style={{ color: '#334155', fontWeight: 600 }}>{formatTien(tinhTongTien())}</span>
+              </div>
+              <div className={styles.summaryRow}>
+                <span>Phí vận chuyển</span>
+                <span style={{ color: '#16a34a', fontWeight: 600 }}>Miễn phí</span>
+              </div>
+              <div className={styles.summaryDivider} />
+              <div className={styles.summaryTotal}>
+                <span className={styles.summaryTotalLabel}>Tổng cộng</span>
+                <span className={styles.summaryTotalValue}>{formatTien(tinhTongTien())}</span>
+              </div>
+              <button className={styles.btnCheckout} onClick={() => navigate('/checkout')}>
+                Tiến hành thanh toán →
+              </button>
+              <div className={styles.secureNote}>
+                🔒 Thanh toán bảo mật & an toàn
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default Cart;
