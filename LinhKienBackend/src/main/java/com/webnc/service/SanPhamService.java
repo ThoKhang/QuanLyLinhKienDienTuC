@@ -44,4 +44,9 @@ public class SanPhamService {
         }
         sanPhamRepository.deleteById(id);
     }
+    // Thêm hàm này để lấy chi tiết 1 linh kiện theo ID
+    public SanPham laySanPhamTheoId(Long id) {
+        return sanPhamRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Sản phẩm không tồn tại với ID: " + id));
+    }
 }

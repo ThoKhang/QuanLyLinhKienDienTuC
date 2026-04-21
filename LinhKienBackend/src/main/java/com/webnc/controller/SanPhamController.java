@@ -15,7 +15,7 @@ public class SanPhamController {
 
     @Autowired
     private SanPhamService sanPhamService;
-
+    
     // ==========================================
     // API PUBLIC (Ai cũng xem được, không cần Token)
     // ==========================================
@@ -38,7 +38,19 @@ public class SanPhamController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
+    // Thêm hàm này vào dưới hàm layDanhSachSanPham
+    @GetMapping("/api/public/san-pham/{id}")
+    public ResponseEntity<?> layChiTietSanPham(@PathVariable Long id) {
+        try {
+            // Bạn hãy kiểm tra xem trong SanPhamService đã có hàm tìm theo ID chưa
+            // Nếu chưa có, tôi sẽ hướng dẫn viết ở bước dưới
+            SanPham sp = sanPhamService.laySanPhamTheoId(id);
+            return ResponseEntity.ok(sp);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body("Không tìm thấy sản phẩm với ID: " + id);
+        }
+    }
+    
     @DeleteMapping("/api/admin/san-pham/{id}")
     public ResponseEntity<?> xoaSanPham(@PathVariable Long id) {
         try {
