@@ -1,0 +1,46 @@
+.headerBar {
+  background: white;
+  padding: 15px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #007bff;
+}
+
+.navGroup {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.navLink {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+}
+
+.btnRegister {
+  background: #007bff;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.btnLogout {
+  background: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
