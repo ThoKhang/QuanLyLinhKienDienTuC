@@ -3,6 +3,7 @@ package com.webnc.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "danh_gia_san_pham")
@@ -32,4 +33,7 @@ public class DanhGiaSanPham {
 
     @Column(name = "ngay_tao")
     private Date ngayTao = new Date();
+    // Thêm vào trong class DanhGiaSanPham
+    @OneToMany(mappedBy = "danhGia", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<HinhAnhDanhGia> hinhAnhs;
 }
