@@ -73,4 +73,12 @@ public class DanhGiaService {
     public List<DanhGiaSanPham> xemDanhGiaSanPham(Long sanPhamId) {
         return danhGiaRepository.findBySanPham_IdOrderByNgayTaoDesc(sanPhamId);
     }
+        // Thêm vào DanhGiaService.java
+    public List<DanhGiaSanPham> layTatCaDanhGia() {
+        return danhGiaRepository.findAllByOrderByNgayTaoDesc();
+    }
+
+    public void xoaDanhGia(Long id) {
+        danhGiaRepository.deleteById(id);
+    }
 }

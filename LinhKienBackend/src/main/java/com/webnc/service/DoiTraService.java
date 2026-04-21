@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class DoiTraService {
@@ -57,5 +58,9 @@ public class DoiTraService {
         yeuCau.setNgayCapNhat(new Date());
 
         return doiTraRepository.save(yeuCau);
+    }
+        // Thêm vào DoiTraService.java
+    public List<YeuCauDoiTra> layTatCaYeuCau() {
+        return doiTraRepository.findAllByOrderByNgayTaoDesc();
     }
 }

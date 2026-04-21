@@ -14,4 +14,5 @@ public interface DanhGiaRepository extends JpaRepository<DanhGiaSanPham, Long> {
 
     // Kiểm tra xem user này đã đánh giá sản phẩm này trong đơn hàng này chưa
     boolean existsByNguoiDung_IdAndSanPham_IdAndDonHang_Id(Long userId, Long sanPhamId, Long donHangId);
+    List<DanhGiaSanPham> findAllByOrderByNgayTaoDesc();
 }

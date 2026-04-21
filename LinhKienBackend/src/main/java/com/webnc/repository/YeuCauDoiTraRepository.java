@@ -14,4 +14,5 @@ public interface YeuCauDoiTraRepository extends JpaRepository<YeuCauDoiTra, Long
     
     // Kiểm tra xem đơn hàng này đã từng bị yêu cầu đổi trả chưa (1 đơn chỉ được claim 1 lần)
     boolean existsByDonHang_Id(Long donHangId);
+    List<YeuCauDoiTra> findAllByOrderByNgayTaoDesc();
 }
