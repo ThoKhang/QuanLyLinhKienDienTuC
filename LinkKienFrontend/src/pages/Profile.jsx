@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Thêm để chuyển trang
+import { useNavigate } from 'react-router-dom';
 import axiosClient from '../api/axiosClient';
 import styles from './Profile.module.css';
 
@@ -9,7 +9,6 @@ function Profile() {
     const [isEditing, setIsEditing] = useState(false);
     const navigate = useNavigate();
 
-    // Thêm email vào formData
     const [formData, setFormData] = useState({ 
         hoTen: '', 
         email: '', 
@@ -23,7 +22,7 @@ function Profile() {
             setUser(res.data);
             setFormData({
                 hoTen: res.data.hoTen,
-                email: res.data.email, // Lấy email từ DB
+                email: res.data.email,
                 soDienThoai: res.data.soDienThoai || '',
                 diaChi: res.data.diaChi || ''
             });
@@ -38,13 +37,14 @@ function Profile() {
 
     const handleSave = async () => {
         try {
-            // Backend của Khang cần xử lý nhận thêm trường email nhé
             await axiosClient.put('/user/profile', formData);
             alert("Đã cập nhật thông tin thành công!");
             setIsEditing(false);
             fetchProfile(); 
         } catch (err) {
-            alert(err.response?.data || "Lỗi khi cập nhật!");
+            // FIX LỖI [object Object]: Ép kiểu thông báo về String
+            const errorMsg = err.response?.data?.message || err.response?.data || "Lỗi khi cập nhật!";
+            alert(typeof errorMsg === 'object' ? JSON.stringify(errorMsg) : errorMsg);
         }
     };
 
@@ -54,67 +54,42 @@ function Profile() {
         <div className={styles.container}>
             <div className={styles.profileCard}>
                 <div className={styles.cardHeader}>
-                    <div className={styles.avatar}>{user.hoTen.charAt(0).toUpperCase()}</div>
-                    <h2 className={styles.userName}>{user.hoTen}</h2>
-                    <span className={styles.roleBadge}>{user.vaiTro}</span>
+                    <div className={styles.avatar}>{user?.hoTen?.charAt(0).toUpperCase()}</div>
+                    <h2 className={styles.userName}>{user?.hoTen}</h2>
+                    <span className={styles.roleBadge}>{user?.vaiTro}</span>
                 </div>
 
                 <div className={styles.cardBody}>
-                    {/* HỌ TÊN */}
                     <div className={styles.infoGroup}>
                         <label>Họ và tên</label>
                         {isEditing ? (
-                            <input 
-                                className={styles.inputField}
-                                value={formData.hoTen} 
-                                onChange={(e) => setFormData({...formData, hoTen: e.target.value})}
-                            />
-                        ) : (
-                            <div className={styles.value}>{user.hoTen}</div>
-                        )}
+                            <input className={styles.inputField} value={formData.hoTen} 
+                                onChange={(e) => setFormData({...formData, hoTen: e.target.value})} />
+                        ) : ( <div className={styles.value}>{user?.hoTen}</div> )}
                     </div>
 
-                    {/* EMAIL - MỚI BỔ SUNG */}
                     <div className={styles.infoGroup}>
                         <label>Email liên hệ</label>
                         {isEditing ? (
-                            <input 
-                                type="email"
-                                className={styles.inputField}
-                                value={formData.email} 
-                                onChange={(e) => setFormData({...formData, email: e.target.value})}
-                            />
-                        ) : (
-                            <div className={styles.value}>{user.email}</div>
-                        )}
+                            <input type="email" className={styles.inputField} value={formData.email} 
+                                onChange={(e) => setFormData({...formData, email: e.target.value})} />
+                        ) : ( <div className={styles.value}>{user?.email}</div> )}
                     </div>
 
-                    {/* SỐ ĐIỆN THOẠI */}
                     <div className={styles.infoGroup}>
                         <label>Số điện thoại</label>
                         {isEditing ? (
-                            <input 
-                                className={styles.inputField}
-                                value={formData.soDienThoai} 
-                                onChange={(e) => setFormData({...formData, soDienThoai: e.target.value})}
-                            />
-                        ) : (
-                            <div className={styles.value}>{user.soDienThoai || 'Chưa cập nhật'}</div>
-                        )}
+                            <input className={styles.inputField} value={formData.soDienThoai} 
+                                onChange={(e) => setFormData({...formData, soDienThoai: e.target.value})} />
+                        ) : ( <div className={styles.value}>{user?.soDienThoai || 'Chưa cập nhật'}</div> )}
                     </div>
 
-                    {/* ĐỊA CHỈ */}
                     <div className={styles.infoGroup}>
                         <label>Địa chỉ nhận hàng</label>
                         {isEditing ? (
-                            <textarea 
-                                className={styles.inputField}
-                                value={formData.diaChi} 
-                                onChange={(e) => setFormData({...formData, diaChi: e.target.value})}
-                            />
-                        ) : (
-                            <div className={styles.value}>{user.diaChi || 'Chưa cập nhật'}</div>
-                        )}
+                            <textarea className={styles.inputField} value={formData.diaChi} 
+                                onChange={(e) => setFormData({...formData, diaChi: e.target.value})} />
+                        ) : ( <div className={styles.value}>{user?.diaChi || 'Chưa cập nhật'}</div> )}
                     </div>
                 </div>
 
@@ -127,21 +102,8 @@ function Profile() {
                     ) : (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%' }}>
                             <button className={styles.btnEdit} onClick={() => setIsEditing(true)}>Chỉnh sửa hồ sơ</button>
-                            
-                            {/* NÚT ĐỔI MẬT KHẨU - MỚI BỔ SUNG */}
-                            <button 
-                                className={styles.btnPassword} 
-                                onClick={() => navigate('/change-password')}
-                                style={{
-                                    background: 'none',
-                                    border: '1px solid #cbd5e1',
-                                    color: '#64748b',
-                                    padding: '10px',
-                                    borderRadius: '8px',
-                                    cursor: 'pointer',
-                                    fontWeight: 'bold'
-                                }}
-                            >
+                            <button className={styles.btnPassword} onClick={() => navigate('/change-password')}
+                                style={{ background: 'none', border: '1px solid #cbd5e1', color: '#64748b', padding: '10px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>
                                 🔑 Đổi mật khẩu
                             </button>
                         </div>

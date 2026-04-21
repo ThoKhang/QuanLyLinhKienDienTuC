@@ -15,4 +15,12 @@ public interface GioHangRepository extends JpaRepository<GioHang, Long> {
 
     // Tìm xem 1 sản phẩm cụ thể đã nằm trong giỏ của user này chưa
     Optional<GioHang> findByNguoiDung_TenDangNhapAndSanPham_Id(String tenDangNhap, Long sanPhamId);
+    // Lấy toàn bộ giỏ hàng của 1 người dùng cụ thể
+    List<GioHang> findByNguoiDung_Id(Long nguoiDungId);
+    
+    // Kiểm tra xem sản phẩm này đã có trong giỏ của người này chưa (để cộng dồn số lượng)
+    Optional<GioHang> findByNguoiDung_IdAndSanPham_Id(Long nguoiDungId, Long sanPhamId);
+    
+    // Dọn sạch giỏ hàng (Được gọi sau khi thanh toán thành công)
+    void deleteByNguoiDung_Id(Long nguoiDungId);
 }

@@ -10,6 +10,7 @@ function AdminLayout() {
     { path: '/admin/accounts', label: 'Tài khoản', icon: '👤' },
     { path: '/admin/comments', label: 'Bình luận', icon: '💬' },
     { path: '/admin/returns', label: 'Đổi trả', icon: '🔄' },
+    { path: '/admin/orders', label: 'Quản lý đơn hàng', icon: '📦' }
   ];
 
   return (

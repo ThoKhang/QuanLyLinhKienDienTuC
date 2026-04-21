@@ -12,6 +12,8 @@ import Profile from './pages/Profile';
 import MyOrders from './pages/MyOrders';
 import MyReturns from './pages/MyReturns';
 import ChangePassword from './pages/ChangePassword';
+import Checkout from './pages/Checkout';
+import AdminOrder from './pages/Admin/AdminOrder';
 // Import các trang của Admin
 import AdminLayout from './pages/Admin/AdminLayout';
 import AdminDashboard from './pages/Admin/AdminDashboard';
@@ -31,7 +33,7 @@ function App() {
         
         {/* ĐÃ BỔ SUNG: Route dành riêng cho trang Đăng ký */}
         <Route path="/register" element={<Register />} /> 
-
+        <Route path="/checkout" element={<><Header /><Checkout /></>} />  
         <Route path="/cart" element={<><Header /><Cart /></>} />
         <Route path="/profile" element={<><Header /><Profile /></>} />
         <Route path="/change-password" element={<><Header /><ChangePassword /></>} />
@@ -41,6 +43,7 @@ function App() {
         {/* ROUTE CHO ADMIN */}
         <Route path="/admin" element={<AdminLayout />}>
            <Route index element={<AdminDashboard />} />
+           <Route path="orders" element={<AdminOrder />} />
            <Route path="products" element={<AdminProduct />} />
            <Route path="accounts" element={<AdminAccount />} />
            <Route path="comments" element={<AdminComment />} />
