@@ -7,34 +7,48 @@ function AdminLayout() {
   const menuItems = [
     { path: '/admin', label: 'Thống kê', icon: '📊' },
     { path: '/admin/products', label: 'Sản phẩm', icon: '💻' },
+    { path: '/admin/orders', label: 'Đơn hàng', icon: '📦' },
+    { path: '/admin/returns', label: 'Đổi trả', icon: '🔄' },
     { path: '/admin/accounts', label: 'Tài khoản', icon: '👤' },
     { path: '/admin/comments', label: 'Bình luận', icon: '💬' },
-    { path: '/admin/returns', label: 'Đổi trả', icon: '🔄' },
-    { path: '/admin/orders', label: 'Quản lý đơn hàng', icon: '📦' }
   ];
 
   return (
     <div className={styles.adminContainer}>
-      {/* SIDEBAR DỌC */}
       <div className={styles.sidebar}>
-        <div className={styles.sidebarHeader}>KHSTORE ADMIN</div>
-        <nav className={styles.menuList}>
+        <div className={styles.sidebarHeader}>
+          <div className={styles.sidebarLogo}>
+            <div className={styles.logoIcon}>⚡</div>
+            <div>
+              <div className={styles.logoText}>KHSTORE</div>
+              <span className={styles.logoSub}>Control Panel</span>
+            </div>
+          </div>
+        </div>
+
+        <ul className={styles.menuList}>
+          <li className={styles.menuSection}>Quản lý</li>
           {menuItems.map((item) => (
-            <Link 
-              key={item.path} 
-              to={item.path} 
-              className={`${styles.menuItem} ${location.pathname === item.path ? styles.menuItemActive : ''}`}
-            >
-              <span>{item.icon}</span> {item.label}
-            </Link>
+            <li key={item.path}>
+              <Link
+                to={item.path}
+                className={`${styles.menuItem} ${location.pathname === item.path ? styles.menuItemActive : ''}`}
+              >
+                <span className={styles.menuIcon}>{item.icon}</span>
+                {item.label}
+              </Link>
+            </li>
           ))}
-          <Link to="/" className={styles.menuItem} style={{marginTop: 'auto', borderTop: '1px solid rgba(255,255,255,0.1)'}}>
-             🏠 Về trang chủ
+        </ul>
+
+        <div className={styles.sidebarFooter}>
+          <Link to="/" className={styles.menuItemHome}>
+            <span className={styles.menuIcon}>🏠</span>
+            Về trang chủ
           </Link>
-        </nav>
+        </div>
       </div>
 
-      {/* VÙNG HIỂN THỊ NỘI DUNG DỰA TRÊN URL */}
       <div className={styles.mainContent}>
         <Outlet />
       </div>

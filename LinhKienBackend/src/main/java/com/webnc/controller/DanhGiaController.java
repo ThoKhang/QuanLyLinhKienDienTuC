@@ -43,7 +43,7 @@ public class DanhGiaController {
             NguoiDung user = nguoiDungRepository.findByTenDangNhap(principal.getName()).orElseThrow();
             DonHang donHang = donHangRepository.findById(Long.valueOf(request.get("donHangId").toString())).orElseThrow();
             SanPham sanPham = sanPhamRepository.findById(Long.valueOf(request.get("sanPhamId").toString())).orElseThrow();
-
+        
             DanhGiaSanPham danhGia = new DanhGiaSanPham();
             danhGia.setNguoiDung(user);
             danhGia.setDonHang(donHang);
