@@ -1,0 +1,96 @@
+.adminContainer {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+/* SIDEBAR BÊN TRÁI */
+.sidebar {
+  width: 260px;
+  background-color: #4A7766; /* Màu xanh bạn thích */
+  color: #ECE7E2; /* Màu sáng bạn thích */
+  position: fixed;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+}
+
+.sidebarHeader {
+  padding: 30px 20px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+  border-bottom: 1px solid rgba(236, 231, 226, 0.2);
+}
+
+.menuList {
+  list-style: none;
+  padding: 20px 0;
+  margin: 0;
+}
+
+.menuItem {
+  padding: 15px 25px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s;
+  text-decoration: none;
+  color: #ECE7E2;
+  font-size: 16px;
+}
+
+.menuItem:hover, .menuItemActive {
+  background-color: rgba(236, 231, 226, 0.15);
+  border-left: 5px solid #ECE7E2;
+}
+
+/* NỘI DUNG BÊN PHẢI */
+.mainContent {
+  margin-left: 260px;
+  flex-grow: 1;
+  padding: 30px;
+}
+
+.cardStats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.statItem {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border-bottom: 4px solid #4A7766;
+}
+
+.statValue {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* BIỂU ĐỒ MÔ PHỎNG */
+.chartPlaceholder {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  height: 300px;
+  display: flex;
+  align-items: flex-end;
+  gap: 15px;
+  justify-content: space-around;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.bar {
+  background-color: #4A7766;
+  width: 40px;
+  border-radius: 5px 5px 0 0;
+  transition: height 1s ease-in-out;
+}
