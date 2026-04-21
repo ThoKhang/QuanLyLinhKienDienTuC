@@ -12,15 +12,12 @@ function ProductDetail() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // 1. Lấy thông tin chi tiết sản phẩm
+                // Lấy thông tin chi tiết (đã bao gồm list chiTietLinhKiens từ Backend)
                 const resProduct = await axiosClient.get(`/public/san-pham/${id}`);
                 setProduct(resProduct.data);
                 
-                // 2. Lấy danh sách bình luận (Đúng đường dẫn Backend của bạn)
                 const resReviews = await axiosClient.get(`/public/danh-gia/${id}`); 
                 setReviews(resReviews.data);
-                
-                console.log("Dữ liệu bình luận:", resReviews.data); 
             } catch (err) {
                 console.error("Lỗi tải dữ liệu:", err);
             }
@@ -29,10 +26,7 @@ function ProductDetail() {
     }, [id]);
 
     const formatTien = (tien) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(tien);
-
-    const renderStars = (rating) => {
-        return "⭐".repeat(rating) + "☆".repeat(5 - rating);
-    };
+    const renderStars = (rating) => "⭐".repeat(rating) + "☆".repeat(5 - rating);
 
     const handleAddToCart = async () => {
         const token = localStorage.getItem('token');
@@ -72,9 +66,32 @@ function ProductDetail() {
                 </div>
             </div>
 
+            {/* BẢNG THÔNG SỐ KỸ THUẬT */}
+            {product.chiTietLinhKiens && product.chiTietLinhKiens.length > 0 && (
+                <div style={{ maxWidth: '1200px', margin: '30px auto', backgroundColor: 'white', padding: '30px', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+                    <h2 style={{ fontSize: '20px', color: '#1e293b', borderBottom: '2px solid #f1f5f9', paddingBottom: '15px', marginBottom: '20px' }}>
+                        Thông số kỹ thuật chi tiết
+                    </h2>
+                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                        <tbody>
+                            {product.chiTietLinhKiens.map((spec, index) => (
+                                <tr key={index} style={{ backgroundColor: index % 2 === 0 ? '#f8fafc' : 'white' }}>
+                                    <td style={{ padding: '15px', width: '30%', fontWeight: 'bold', color: '#475569', borderBottom: '1px solid #f1f5f9' }}>
+                                        {spec.tenThongSo}
+                                    </td>
+                                    <td style={{ padding: '15px', color: '#0f172a', borderBottom: '1px solid #f1f5f9' }}>
+                                        {spec.giaTri}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
+
+            {/* PHẦN ĐÁNH GIÁ (Giữ nguyên của Khang) */}
             <div className={styles.reviewSection}>
                 <h2 className={styles.reviewTitle}>Khách hàng nói gì về sản phẩm này?</h2>
-                
                 {reviews.length === 0 ? (
                     <p className={styles.noReview}>Chưa có đánh giá nào. Hãy là người đầu tiên mua và đánh giá!</p>
                 ) : (
@@ -87,24 +104,14 @@ function ProductDetail() {
                                 </div>
                                 <span className={styles.starRating}>{renderStars(rv.soSao)}</span>
                             </div>
-                            
                             <p className={styles.reviewContent}>{rv.noiDung}</p>
-
-                            {/* HIỂN THỊ HÌNH ẢNH THỰC TẾ (Nếu Backend trả về hinhAnhs) */}
                             {rv.hinhAnhs && rv.hinhAnhs.length > 0 && (
                                 <div className={styles.reviewImages}>
                                     {rv.hinhAnhs.map((img, index) => (
-                                        <img 
-                                            key={index} 
-                                            src={img.urlHinhAnh} 
-                                            alt="Review thực tế" 
-                                            className={styles.reviewImg} 
-                                            onClick={() => window.open(img.urlHinhAnh, '_blank')}
-                                        />
+                                        <img key={index} src={img.urlHinhAnh} alt="Review thực tế" className={styles.reviewImg} onClick={() => window.open(img.urlHinhAnh, '_blank')} />
                                     ))}
                                 </div>
                             )}
-
                             <div className={styles.reviewFooter}>
                                 <span>Đăng ngày: {new Date(rv.ngayTao).toLocaleDateString('vi-VN')}</span>
                             </div>
