@@ -11,6 +11,7 @@ import Register from './pages/Register'; // ĐÃ SỬA: Đổi tên import từ 
 import Profile from './pages/Profile'; 
 import MyOrders from './pages/MyOrders';
 import MyReturns from './pages/MyReturns';
+import ChangePassword from './pages/ChangePassword';
 // Import các trang của Admin
 import AdminLayout from './pages/Admin/AdminLayout';
 import AdminDashboard from './pages/Admin/AdminDashboard';
@@ -33,6 +34,7 @@ function App() {
 
         <Route path="/cart" element={<><Header /><Cart /></>} />
         <Route path="/profile" element={<><Header /><Profile /></>} />
+        <Route path="/change-password" element={<><Header /><ChangePassword /></>} />
         <Route path="/my-orders" element={<><Header /><MyOrders /></>} />
         <Route path="/my-returns" element={<><Header /><MyReturns /></>} />
 

@@ -134,3 +134,37 @@
     font-size: 18px;
     color: #64748b;
 }
+.inputField {
+    width: 100%;
+    padding: 10px 15px;
+    border-radius: 10px;
+    border: 2px solid #6366f1; /* Viền tím khi sửa */
+    font-size: 16px;
+    outline: none;
+    background: #fff;
+    font-family: inherit;
+}
+
+.btnSave {
+    background-color: #10b981; /* Màu xanh lá cho nút Lưu */
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btnCancel {
+    background-color: #f1f5f9;
+    color: #64748b;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.btnSave:hover { background-color: #059669; }
+.btnCancel:hover { background-color: #e2e8f0; }
